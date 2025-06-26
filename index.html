@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>臺灣雙語P.A.注音符號表</title>
+    <title>臺灣雙語P.A.注音符號表 (雙模式選擇器)</title>
     <style>
         /* 基本頁面樣式 */
         body {
@@ -17,129 +17,157 @@
             align-items: center;
         }
 
-        h1 {
-            color: #444;
-            text-align: center; /* 標題置中 */
-        }
-        
-        p {
-            text-align: center; /* 段落置中 */
-        }
+        h1 { color: #2c3e50; text-align: center; }
+        h3 { color: #34495e; margin-top: 0; }
 
-        /* --- 新增：輸入框容器樣式 --- */
-        #input-container {
-            margin-bottom: 20px;
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            width: 100%;
-            max-width: 400px;
-        }
-
-        #number-input {
-            flex-grow: 1; /* 佔滿剩餘空間 */
-            padding: 8px 12px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 1em;
-        }
-
-        #apply-selection-btn {
-            padding: 8px 15px;
-            border: none;
-            background-color: #007bff;
-            color: white;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        #apply-selection-btn:hover {
-            background-color: #0056b3;
-        }
-        /* --- 結束新增 --- */
-
-        /* 圖片格線容器 */
-        #image-grid {
-            display: grid;
-            /* --- 修改：調整格子大小與間距，讓其更小更密集 --- */
-            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); /* 原為 100px */
-            gap: 8px; /* 原為 15px */
-            /* --- 結束修改 --- */
+        /* 通用容器樣式 */
+        .section-container {
             width: 100%;
             max-width: 1200px;
+            margin-top: 25px;
             padding: 20px;
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
-        /* 格線中的圖片項目 */
-        .image-item {
-            width: 100%;
-            height: auto;
-            aspect-ratio: 1 / 1;
-            object-fit: cover;
-            /* --- 修改：邊框變細以適應更小的尺寸 --- */
-            border: 2px solid transparent; /* 原為 3px */
-            /* --- 結束修改 --- */
-            border-radius: 6px;
+        /* 水平分隔線 */
+        hr {
+            width: 80%;
+            max-width: 800px;
+            border: 0;
+            border-top: 1px solid #ccc;
+            margin: 40px 0;
+        }
+
+        /* --- 系統A: 輸入編號 -> 顯示圖片 --- */
+        #input-area-A {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        #number-input-A {
+            flex-grow: 1;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+        #apply-btn-A {
+            padding: 8px 15px;
+            border: none;
+            background-color: #28a745;
+            color: white;
+            border-radius: 4px;
             cursor: pointer;
-            transition: all 0.2s ease-in-out;
-            background-color: #eee;
+            transition: background-color 0.2s;
         }
+        #apply-btn-A:hover { background-color: #218838; }
 
-        .image-item:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        #image-display-A {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            min-height: 70px;
+            align-items: center;
         }
-
-        /* 圖片被選中時的樣式 */
-        .image-item.selected {
-            border-color: #007bff;
-            box-shadow: 0 0 10px rgba(0, 123, 255, 0.7);
-            transform: scale(1.05);
+        .sequence-image-A {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 2px solid #28a745;
         }
+        .placeholder-text { color: #888; font-style: italic; }
 
-        /* 下方顯示結果的區域 */
-        #selection-display {
-            margin-top: 25px;
-            padding: 15px 25px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        /* --- 系統B: 點擊圖片 -> 顯示編號 --- */
+        #text-display-B {
             font-size: 1.5em;
             font-weight: bold;
             color: #555;
             min-height: 1.5em;
             word-break: break-all;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
+        #sequence-output-B { color: #007bff; }
+        #reset-btn-B {
+            padding: 6px 12px;
+            font-size: 0.8em;
+            border: 1px solid #dc3545;
+            background-color: transparent;
+            color: #dc3545;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        #reset-btn-B:hover { background-color: #dc3545; color: white; }
         
-        #selection-output {
-            color: #007bff;
+        #image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+            gap: 8px;
+        }
+        .grid-item {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            border: 2px solid transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s;
+            background-color: #eee;
+        }
+        .grid-item:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            z-index: 10; /* 確保放大的圖片在最上層 */
         }
 
     </style>
 </head>
 <body>
 
-    <h1>臺灣雙語P.A.注音符號表</h1>
-    <p>點擊圖片選擇，或在下方輸入框輸入編號 (用 . 分隔) 後按套用。</p>
+    <h1>臺灣雙語P.A.注音符號表 (雙模式選擇器)</h1>
 
-    <!-- --- 新增：文字輸入區塊 --- -->
-    <div id="input-container">
-        <input type="text" id="number-input" placeholder="輸入編號, 例如: 1.5.12">
-        <button id="apply-selection-btn">套用</button>
+    <!-- ======================================================= -->
+    <!-- 系統 A: 由編號生成圖片 (區塊一 & 區塊二) -->
+    <!-- ======================================================= -->
+    <div class="section-container">
+        <h3>系統 A: 由編號生成序列圖片</h3>
+        <!-- 區塊一: 輸入區 -->
+        <div id="input-area-A">
+            <input type="text" id="number-input-A" placeholder="輸入編號, 用 . 分隔, 例如: 1.5.12">
+            <button id="apply-btn-A">生成圖片</button>
+        </div>
+        <!-- 區塊二: 圖片顯示區 -->
+        <div id="image-display-A">
+            <span class="placeholder-text">此處將顯示生成的圖片序列</span>
+        </div>
     </div>
-    <!-- --- 結束新增 --- -->
 
-    <!-- 圖片格線將會被JS動態填入這裡 -->
-    <div id="image-grid"></div>
+    <hr>
 
-    <!-- 顯示選擇結果的區域 -->
-    <div id="selection-display">
-        已選擇編號：<span id="selection-output">無</span>
+    <!-- ======================================================= -->
+    <!-- 系統 B: 由點擊生成編號 (區塊三 & 區塊四) -->
+    <!-- ======================================================= -->
+    <div class="section-container">
+        <h3>系統 B: 點擊下方格線產生編號</h3>
+        <!-- 區塊三: 編號顯示區 -->
+        <div id="text-display-B">
+            <span>已選編號：<span id="sequence-output-B">尚未點擊</span></span>
+            <button id="reset-btn-B">重設</button>
+        </div>
+        <!-- 區塊四: 圖片格線區 -->
+        <div id="image-grid">
+            <!-- JS 會動態填入所有圖片 -->
+        </div>
     </div>
+
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -150,23 +178,32 @@
             const imageExtension = '.png';
             // ---------------
 
+            // --- 獲取所有需要的 DOM 元素 ---
+            // 系統 A
+            const numberInputA = document.getElementById('number-input-A');
+            const applyBtnA = document.getElementById('apply-btn-A');
+            const imageDisplayA = document.getElementById('image-display-A');
+
+            // 系統 B
+            const sequenceOutputB = document.getElementById('sequence-output-B');
+            const resetBtnB = document.getElementById('reset-btn-B');
             const gridContainer = document.getElementById('image-grid');
-            const outputSpan = document.getElementById('selection-output');
-            // --- 新增：獲取新加入的HTML元素 ---
-            const numberInput = document.getElementById('number-input');
-            const applyBtn = document.getElementById('apply-selection-btn');
-            // --- 結束新增 ---
 
-            const selectedNumbers = new Set();
+            // --- 系統 B 的資料儲存 ---
+            let clickedSequence = [];
 
-            // 1. 動態生成所有圖片 (邏輯不變)
+
+            // ===============================================
+            // 初始化: 動態生成主圖片格線 (區塊四)
+            // ===============================================
             for (let i = 1; i <= imageCount; i++) {
                 const img = document.createElement('img');
                 const numberString = String(i).padStart(2, '0');
                 img.src = `${imagePath}${numberString}${imageExtension}`;
                 img.alt = `圖片 ${i}`;
-                img.classList.add('image-item');
+                img.classList.add('grid-item');
                 img.dataset.number = i;
+                img.title = `點擊選擇編號 ${i}`;
                 img.onerror = function() {
                     this.alt = `圖片 ${i} 載入失敗`;
                     this.style.backgroundColor = '#ffdddd';
@@ -174,87 +211,67 @@
                 gridContainer.appendChild(img);
             }
 
-            // 2. 圖片點擊事件 (邏輯不變，但現在會呼叫 updateUi)
-            gridContainer.addEventListener('click', (event) => {
-                if (event.target && event.target.classList.contains('image-item')) {
-                    const clickedImage = event.target;
-                    const number = parseInt(clickedImage.dataset.number, 10);
-                    
-                    // 切換圖片的 selected class
-                    clickedImage.classList.toggle('selected');
 
-                    // 更新 Set 中的資料
-                    if (clickedImage.classList.contains('selected')) {
-                        selectedNumbers.add(number);
-                    } else {
-                        selectedNumbers.delete(number);
-                    }
+            // ===============================================
+            // 系統 A: 輸入編號 -> 顯示圖片 的邏輯
+            // ===============================================
+            function renderSequenceFromInput() {
+                // 清空當前顯示
+                imageDisplayA.innerHTML = '';
+                
+                const inputText = numberInputA.value.trim();
+                const numbers = inputText
+                    .split('.')
+                    .map(s => parseInt(s.trim(), 10))
+                    .filter(n => !isNaN(n) && n > 0 && n <= imageCount);
 
-                    // 更新所有相關的UI
-                    updateUi();
-                }
-            });
-
-            // --- 新增功能：從輸入框套用選擇 ---
-            function applySelectionFromInput() {
-                // a. 先清除所有目前的選擇
-                selectedNumbers.clear();
-                document.querySelectorAll('.image-item.selected').forEach(img => {
-                    img.classList.remove('selected');
-                });
-
-                const inputText = numberInput.value.trim();
-                if (inputText === '') {
-                    updateUi(); // 如果輸入框是空的，就清空選擇並更新UI
+                if (numbers.length === 0) {
+                    imageDisplayA.innerHTML = '<span class="placeholder-text">無有效編號，請重新輸入</span>';
                     return;
                 }
-                
-                // b. 解析輸入的字串
-                const numbersToSelect = inputText
-                    .split('.') // 用 '.' 分割
-                    .map(s => parseInt(s, 10)) // 將每個字串轉為數字
-                    .filter(n => !isNaN(n) && n > 0 && n <= imageCount); // 過濾掉無效的數字 (非數字, 0, 或超出範圍)
 
-                // c. 根據解析出的數字更新選擇
-                numbersToSelect.forEach(number => {
-                    selectedNumbers.add(number);
-                    const imgToSelect = gridContainer.querySelector(`.image-item[data-number="${number}"]`);
-                    if (imgToSelect) {
-                        imgToSelect.classList.add('selected');
-                    }
+                numbers.forEach(number => {
+                    const img = document.createElement('img');
+                    const numberString = String(number).padStart(2, '0');
+                    img.src = `${imagePath}${numberString}${imageExtension}`;
+                    img.alt = `圖片 ${number}`;
+                    img.classList.add('sequence-image-A');
+                    imageDisplayA.appendChild(img);
                 });
-
-                // d. 更新所有UI
-                updateUi();
             }
-
-            // 3. 將套用功能綁定到按鈕點擊和輸入框按 Enter 鍵
-            applyBtn.addEventListener('click', applySelectionFromInput);
-            numberInput.addEventListener('keydown', (event) => {
+            
+            applyBtnA.addEventListener('click', renderSequenceFromInput);
+            numberInputA.addEventListener('keydown', (event) => {
                 if (event.key === 'Enter') {
-                    applySelectionFromInput();
+                    event.preventDefault();
+                    renderSequenceFromInput();
                 }
             });
-            // --- 結束新增 ---
 
 
-            // 4. 更新UI的函式 (原 updateDisplay 函式升級)
-            // 將更新下方文字和輸入框的邏輯整合在一起，確保UI同步
-            function updateUi() {
-                if (selectedNumbers.size === 0) {
-                    outputSpan.textContent = '無';
-                    numberInput.value = ''; // 同步清空輸入框
-                    return;
+            // ===============================================
+            // 系統 B: 點擊圖片 -> 顯示編號 的邏輯
+            // ===============================================
+            function updateSequenceTextDisplay() {
+                if (clickedSequence.length === 0) {
+                    sequenceOutputB.textContent = '尚未點擊';
+                } else {
+                    sequenceOutputB.textContent = clickedSequence.join('.');
                 }
-                
-                const sortedNumbers = Array.from(selectedNumbers).sort((a, b) => a - b);
-                const resultString = sortedNumbers.join('.');
-                
-                // 更新下方的顯示文字
-                outputSpan.textContent = resultString;
-                // 同步更新輸入框的內容
-                numberInput.value = resultString;
             }
+
+            gridContainer.addEventListener('click', (event) => {
+                if (event.target && event.target.classList.contains('grid-item')) {
+                    const number = parseInt(event.target.dataset.number, 10);
+                    clickedSequence.push(number); // 將點擊的編號加入陣列
+                    updateSequenceTextDisplay(); // 更新文字顯示
+                }
+            });
+
+            resetBtnB.addEventListener('click', () => {
+                clickedSequence = []; // 清空陣列
+                updateSequenceTextDisplay(); // 更新文字顯示
+            });
         });
     </script>
 
